@@ -3,23 +3,28 @@ package main
 import (
 	"context"
 	"fmt"
-	resilience "gosentry"
 	"gosentry/policies"
 	"net/http"
 	"time"
 )
 
 func main() {
-	resp, err := resilience.Execute(context.Background(), func(ctx context.Context) (any, error) {
-		resp, err := http.Get("http://example.com/")
+	retryOptions := policies.RetryOptions{
+		MaxAttempts:  3,
+		InitialDelay: 1 * time.Second,
+		MaxDelay:     10 * time.Second,
+		Backoff:      policies.BackoffExponential,
+		Jitter:       true,
+	}
+	retryPolicy := policies.Retry(retryOptions)
+	wrapped := retryPolicy(func(ctx context.Context) (any, error) {
+		resp, err := http.Get("https://www.google.com/")
 		if err != nil {
 			return nil, err
 		}
 		return resp, nil
-	}, policies.Retry(policies.RetryOptions{
-		MaxAttempts: 3,
-		Delay:       1 * time.Second,
-	}))
+	})
+	resp, err := wrapped(context.Background())
 	fmt.Println(resp)
 	fmt.Println(err)
 }
