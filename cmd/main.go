@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"gosentry/policies"
+	"gosentry"
 	"net/http"
 	"time"
+
+	"gosentry/policies"
 )
 
 func main() {
@@ -17,14 +19,14 @@ func main() {
 		Jitter:       true,
 	}
 	retryPolicy := policies.Retry(retryOptions)
-	wrapped := retryPolicy(func(ctx context.Context) (any, error) {
+	handler := func(ctx context.Context) (any, error) {
 		resp, err := http.Get("https://www.google.com/")
 		if err != nil {
 			return nil, err
 		}
 		return resp, nil
-	})
-	resp, err := wrapped(context.Background())
+	}
+	resp, err := gosentry.Execute(context.Background(), handler, retryPolicy)
 	fmt.Println(resp)
 	fmt.Println(err)
 }

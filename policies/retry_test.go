@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	resilience "gosentry"
+	"gosentry"
 )
 
 func TestRetry_FirstAttemptSuccessful(t *testing.T) {
@@ -331,7 +331,7 @@ func TestRetry_WithResilienceExecute(t *testing.T) {
 		Jitter:       false,
 	})
 
-	result, err := resilience.Execute(context.Background(), handler, policy)
+	result, err := gosentry.Execute(context.Background(), handler, policy)
 
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)

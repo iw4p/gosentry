@@ -1,4 +1,4 @@
-package resilience
+package gosentry
 
 import "context"
 

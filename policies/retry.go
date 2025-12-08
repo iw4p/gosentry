@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	resilience "gosentry"
+	"gosentry"
 )
 
 type BackoffStrategy string
@@ -34,9 +34,9 @@ func DefaultRetryOptions() RetryOptions {
 	}
 }
 
-func Retry(options RetryOptions) resilience.Policy {
+func Retry(options RetryOptions) gosentry.Policy {
 	opts := applyDefaults(options)
-	return func(next resilience.Handler) resilience.Handler {
+	return func(next gosentry.Handler) gosentry.Handler {
 		return func(ctx context.Context) (any, error) {
 			var lastErr error
 
