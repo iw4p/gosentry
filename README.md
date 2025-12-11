@@ -85,6 +85,32 @@ retryPolicy := policies.Retry(retryOptions)
 - `BackoffLinear`: Linear increase in delay
 - `BackoffExponential`: Exponential backoff (default)
 
+### Circuit Breaker Policy
+
+The circuit breaker policy prevents cascading failures by **opening** after a threshold of consecutive failures, rejecting calls for a cooldown period, then allowing a **half-open** trial call to determine recovery.
+
+**Features:**
+- Configurable failure threshold (consecutive)
+- Open timeout cooldown
+- Half-open trial (single in-flight call)
+- Configurable success threshold to close
+- Optional `ShouldTrip` filter for which errors count
+
+**Example:**
+
+```go
+cb := policies.CircuitBreaker(policies.CircuitBreakerOptions{
+    FailureThreshold: 3,
+    SuccessThreshold: 1,
+    OpenTimeout:      5 * time.Second,
+    ShouldTrip: func(err error) bool {
+        return err != nil
+    },
+})
+
+result, err := gosentry.Execute(ctx, handler, cb)
+```
+
 ## Composing Multiple Policies
 
 Policies are applied in reverse order (last policy wraps first):
@@ -104,7 +130,7 @@ result, err := gosentry.Execute(
 The following policies are implemented or planned:
 
 - [x] **Retry** - Automatically retry failed operations with configurable backoff strategies
-- [ ] **Circuit Breaker** - Prevent cascading failures by opening circuit after threshold failures
+- [x] **Circuit Breaker** - Prevent cascading failures by opening circuit after threshold failures
 - [ ] **Timeout** - Enforce maximum execution time for handlers
 - [ ] **Rate Limiting** - Control the rate of execution (token bucket, sliding window)
 - [ ] **Bulkhead** - Isolate execution contexts to prevent resource exhaustion
