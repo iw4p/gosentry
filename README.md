@@ -111,6 +111,20 @@ cb := policies.CircuitBreaker(policies.CircuitBreakerOptions{
 result, err := gosentry.Execute(ctx, handler, cb)
 ```
 
+### Timeout Policy
+
+The timeout policy enforces a maximum execution time for handlers by applying a `context.WithTimeout` and returning `context.DeadlineExceeded` when the deadline is reached.
+
+**Example:**
+
+```go
+timeoutPolicy := policies.Timeout(policies.TimeoutOptions{
+    Duration: 250 * time.Millisecond,
+})
+
+result, err := gosentry.Execute(ctx, handler, timeoutPolicy)
+```
+
 ## Composing Multiple Policies
 
 Policies are applied in reverse order (last policy wraps first):
@@ -131,7 +145,7 @@ The following policies are implemented or planned:
 
 - [x] **Retry** - Automatically retry failed operations with configurable backoff strategies
 - [x] **Circuit Breaker** - Prevent cascading failures by opening circuit after threshold failures
-- [ ] **Timeout** - Enforce maximum execution time for handlers
+- [x] **Timeout** - Enforce maximum execution time for handlers
 - [ ] **Rate Limiting** - Control the rate of execution (token bucket, sliding window)
 - [ ] **Bulkhead** - Isolate execution contexts to prevent resource exhaustion
 - [ ] **Fallback** - Provide default values or alternative handlers on failure
