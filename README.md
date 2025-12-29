@@ -146,7 +146,7 @@ The following policies are implemented or planned:
 - [x] **Retry** - Automatically retry failed operations with configurable backoff strategies
 - [x] **Circuit Breaker** - Prevent cascading failures by opening circuit after threshold failures
 - [x] **Timeout** - Enforce maximum execution time for handlers
-- [ ] **Rate Limiting** - Control the rate of execution (token bucket, sliding window)
+- [x] **Rate Limiting** - Control the rate of execution (token bucket, sliding window)
 - [ ] **Bulkhead** - Isolate execution contexts to prevent resource exhaustion
 - [ ] **Fallback** - Provide default values or alternative handlers on failure
 
