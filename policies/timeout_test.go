@@ -90,5 +90,3 @@ func TestTimeout_DisabledWhenDurationNegative(t *testing.T) {
 		t.Fatalf("expected handler to be called")
 	}
 }
-
-
